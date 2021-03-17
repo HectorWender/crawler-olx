@@ -16,14 +16,26 @@
   </form>
   <?php
   if (isset($_POST["Submit"])) {
+
     $modelo = isset($_POST["modelo"]) ? $_POST["modelo"] : null;
     $filter = 'a[data-lurker-detail="list_id"]';
-    $url = 'https://www.olx.com.br/autos-e-pecas/carros-vans-e-utilitarios';
+    $url    = 'https://www.olx.com.br/autos-e-pecas/carros-vans-e-utilitarios';
     include("entity.php");
 
+    $tempoInicial = new DateTime(date('H:i:s'));
     $data = new DomOLX();
     $result = $data->preparaAmbiente($filter, $url, $modelo);
-    print_r($result);
+
+    $tempoFinal = new DateTime(date('H:i:s'));
+
+    $output = $tempoInicial->diff($tempoFinal)->format('%H:%I:%S');
+    $tempoExecucao = "O tempo de execução foi de " . $output;
+
+    echo $tempoExecucao . '<br>';
+    $result = [$output => $result];
+    var_export($result);
+
+    file_put_contents('links.json', json_encode($result, JSON_PRETTY_PRINT), FILE_APPEND);
   }
 
   ?>

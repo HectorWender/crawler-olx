@@ -4,9 +4,14 @@ require "vendor/autoload.php";
 use GuzzleHttp\Client;
 use Symfony\Component\DomCrawler\Crawler;
 
+$tempoInicial = null;
+$tempoFinal = null;
+
+
 class DomOLX
 {
-  function preparaAmbiente($filter, $url, $modelo = null)
+
+  public function preparaAmbiente($filter, $url, $modelo = null)
   {
     $client = new Client();
     $resposta = $client->get($url);
@@ -37,7 +42,6 @@ class DomOLX
         }
       }
     }
-    file_put_contents('links.json', json_encode($modeloFiltrado, JSON_UNESCAPED_SLASHES));
     return $modeloFiltrado;
   }
 
