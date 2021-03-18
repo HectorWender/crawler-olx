@@ -1,17 +1,22 @@
 {
-  "name": "hecto/php_rest",
-  "description": "PHP Rest API",
-  "license": "MIT",
-  "authors": [
-      {
-          "name": "Hector Wender",
-          "email": "hectorwender7@gmail.com"
+    "name": "hector/php_rest_olx",
+    "description": "Projeto Crawler OLX",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hector Wender",
+            "email": "hectorwender7@gmail.com"
+        }
+    ],
+    "require": {
+      "guzzlehttp/guzzle": "^7.2",
+      "sunra/php-simple-html-dom-parser": "^1.5",
+      "symfony/css-selector": "^5.2",
+      "symfony/dom-crawler": "^5.2"
+    },
+    "autoload": {
+      "psr-4": {
+        "App\\" : "App/"
       }
-  ],
-  "require": {
-    "guzzlehttp/guzzle": "^7.2",
-    "sunra/php-simple-html-dom-parser": "^1.5",
-    "symfony/css-selector": "^5.2",
-    "symfony/dom-crawler": "^5.2"
-  }
+    }
 }
