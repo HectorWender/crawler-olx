@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Controller;
+namespace src\controller;
 
 use GuzzleHttp\Client;
+use src\Model\CrawlerModel;
 use Symfony\Component\DomCrawler\Crawler;
-use App\Model\CrawlerModel;
 
 /**
  * Responsável pelas requisições da tela.
- * @package App\Controller
  */
 class CrawlerController
 {
     /**
-     * CrawlerController constructor
+     * CrawlerController constructor.
      */
     public function __construct()
     {
@@ -23,7 +22,7 @@ class CrawlerController
     }
 
     /**
-     * Monta os links de todas as páginas de acordo com a última página
+     * Monta os links de todas as páginas de acordo com a última página.
      * @param string $filter
      * @param string $url
      * @param string $marca
@@ -35,36 +34,35 @@ class CrawlerController
         $i = 2;
         // $result = ['Não existem carros disponíveis nessa marca ou modelo!'];
         $result = [];
-        $link = $url .'/'. strtolower($marca) .'/'. strtolower($modelo);
+        $link = $url.'/'.strtolower($marca).'/'.strtolower($modelo);
 
         $lastPag = $this->pegarUltimaPag($link);
 
         //Separa os números da string
-        $numLastPg = preg_replace("/[^0-9]/","", $lastPag);
+        $numLastPg = preg_replace('/[^0-9]/', '', $lastPag);
 
-        $result = $this->prepararAmbiente($filter, $link, $marca, $modelo);
+        $result = $this->prepararAmbiente($filter, $link);
 
         //Verifica se existe mais de uma página
         if ($numLastPg) {
-          while($i <= $numLastPg){
-              $result = $this->prepararAmbiente($filter, $link.'?o='
-              .$i, $marca, $modelo);
-              $i++;
-          }
+            while ($i <= $numLastPg) {
+                $result = $this->prepararAmbiente($filter, $link.'?o='.$i);
+                ++$i;
+            }
         }
 
         return $result;
     }
 
     /**
-     * Filtra os campos da tela
+     * Filtra os campos da tela.
      * @param string $filter
      * @param string $url
      * @param string $marca
      * @param string $modelo
      * @return array
      */
-    public function prepararAmbiente($filter, $url, $marca = null, $modelo = null)
+    public function prepararAmbiente($filter, $url)
     {
         $resposta = $this->client->get($url);
 
@@ -73,19 +71,19 @@ class CrawlerController
 
         $contentContainer = $crawler->filter($filter);
 
-        return $this->cModel->prepararJson($contentContainer, $marca, $modelo);
+        return $this->cModel->prepararJson($contentContainer);
     }
 
     /**
-     * Retorna a última página
+     * Retorna a última página.
      * @param string $url
      * @return Crawler
      */
-    public function pegarUltimaPag($url)
+    private function pegarUltimaPag($url)
     {
         $resposta = $this->client->get($url);
 
-        $html = $resposta->getBody()->getContents();
+        $html = $resposta->getBody();
         $crawler = new Crawler($html);
 
         return $crawler->filter('a[data-lurker-detail="last_page"]')->attr('href');

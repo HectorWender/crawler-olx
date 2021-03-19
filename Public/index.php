@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-  <title>Título da página</title>
+  <title></title>
   <meta charset="utf-8" />
 </head>
 
@@ -23,36 +23,41 @@
   </form>
   <?php
   /**
-   * Obtêm os dados para realizar a pesquisar
+   * Obtêm os dados para realizar a pesquisar.
    * @category Projeto crawler de carros da olx
    * @license MIT
    */
-  require_once '../vendor/autoload.php';
 
-  if (isset($_POST["Submit"])) {
-      $modelo = isset($_POST["modelo"]) ? $_POST["modelo"] : null;
-      $marca  = isset($_POST["marca"]) ? $_POST["marca"] : null;
+        require_once '../vendor/autoload.php';
+
+  if (isset($_POST['Submit'])) {
+      $modelo = isset($_POST['modelo']) ? $_POST['modelo'] : null;
+      $marca = isset($_POST['marca']) ? $_POST['marca'] : null;
       $filter = 'a[data-lurker-detail="list_id"]';
-      $url    = 'https://www.olx.com.br/autos-e-pecas/carros-vans-e-utilitarios';
+      $url = 'https://www.olx.com.br/autos-e-pecas/carros-vans-e-utilitarios';
 
       $tempoInicial = new DateTime(date('H:i:s'));
-      
-      $data = new App\Controller\CrawlerController();
-      $result = $data->percorrerPagina($filter, $url, $marca, $modelo);
+
+      $ctl = new src\Controller\CrawlerController();
+      $result = $ctl->percorrerPagina($filter, $url, $marca, $modelo);
 
       $tempoFinal = new DateTime(date('H:i:s'));
 
       $output = $tempoInicial->diff($tempoFinal)->format('%H:%I:%S');
-      $tempoExecucao = "O tempo de execução foi de " . strval($output);
+      $tempoExec = 'O tempo de execução foi de '.strval($output);
 
-      echo $tempoExecucao . '<br>';
+      echo $tempoExec.'<br>';
 
       $i = 0;
       $result = [$output => $result];
       var_export($result);
 
-      file_put_contents('links.json', json_encode($result, JSON_UNESCAPED_SLASHES), FILE_APPEND);
+      file_put_contents(
+          'links.json',
+          json_encode($result, JSON_UNESCAPED_SLASHES),
+          FILE_APPEND
+      );
   }
-    ?>
+  ?>
 </body>
 </html>
